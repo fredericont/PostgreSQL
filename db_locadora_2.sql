@@ -32,9 +32,9 @@ CREATE TABLE veiculos (
 
 CREATE TABLE locacao (
     num_contrato                        SERIAL PRIMARY KEY,
-    data_locacao                        DATETIME NOT NULL,
+    data_locacao                        TIMESTAMP NOT NULL,
     data_prevista_devolucao             DATE NOT NULL,
-    data_efetiva_devolucao              DATETIME,
+    data_efetiva_devolucao              TIMESTAMP, 
     km_inicial                          INTEGER NOT NULL,
     km_final                            INTEGER NOT NULL,
     cpf                                 VARCHAR(11),
