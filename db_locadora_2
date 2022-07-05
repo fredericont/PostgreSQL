@@ -107,7 +107,10 @@ ALTER TABLE modelos ADD CONSTRAINT FK_modelos_1
     FOREIGN KEY                         (id_marca)
     REFERENCES marcas                   (id_marca)
     ON DELETE RESTRICT;
+
+
 -- CHECKS --
+
 ALTER TABLE pessoas ADD CONSTRAINT CK_cpf CHECK (LENGTH(cpf) = 11)
 ALTER TABLE pessoas ADD CONSTRAINT CK_cnh CHECK (LENGTH(cnh) = 11)
 ALTER TABLE pessoas ADD CONSTRAINT CK_celular CHECK (LENGTH(celular) = 11)
