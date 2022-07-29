@@ -1,3 +1,6 @@
+
+-- CRIANDO TABELAS --
+
 CREATE TABLE pessoas (
     cpf                                VARCHAR(11) PRIMARY KEY,
     nome                               VARCHAR(50) NOT NULL,
@@ -7,7 +10,7 @@ CREATE TABLE pessoas (
     logradouro                         VARCHAR(50) NOT NULL,
     cep                                VARCHAR(8) NOT NULL,
     complemento                        VARCHAR(30),
-    numero                             SMALLINT,
+    numero                             VARCHAR(10) NOT NULL,
     bairro                             VARCHAR(20) NOT NULL,
     cidade                             VARCHAR(20) NOT NULL,
     estado                             VARCHAR(20) NOT NULL,
@@ -20,11 +23,11 @@ CREATE TABLE pessoas (
 CREATE TABLE veiculos (
     chassi                              VARCHAR(17) PRIMARY KEY,
     placa                               VARCHAR(7) NOT NULL,
-    ano_modelo                          YEAR NOT NULL,
-    ano_fabricacao                      YEAR ,
+    ano_modelo                          SMALLINT NOT NULL,
+    ano_fabricacao                      SMALLINT ,
     motor                               VARCHAR(3) NOT NULL,
     km_atual                            VARCHAR(8) NOT NULL,
-    valor_diaria                        DECIMAL NOT NULL,
+    valor_diaria                        NUMERIC NOT NULL,
     id_modelo                           INTEGER NOT NULL,
     id_combustivel                      INTEGER NOT NULL,
     id_cor                              INTEGER NOT NULL
@@ -34,16 +37,16 @@ CREATE TABLE locacao (
     num_contrato                        SERIAL PRIMARY KEY,
     data_locacao                        TIMESTAMP NOT NULL,
     data_prevista_devolucao             DATE NOT NULL,
-    data_efetiva_devolucao              TIMESTAMP, 
+    data_efetiva_devolucao              TIMESTAMP NOT NULL,
     km_inicial                          INTEGER NOT NULL,
     km_final                            INTEGER NOT NULL,
     cpf                                 VARCHAR(11),
-    chassi                              INTEGER
+    chassi                              VARCHAR(17)
 );
 
 CREATE TABLE funcionarios (
     id_funcionario                      SERIAL PRIMARY KEY,
-    salario                             DECIMAL,
+    salario                             DECIMAL NOT NULL,
     data_contratacao                    DATE NOT NULL,
     cpf                                 VARCHAR(11)
 );
@@ -67,8 +70,9 @@ CREATE TABLE combustiveis (
 
 CREATE TABLE cores (
     id_cor                              SERIAL PRIMARY KEY,
-    nome_cor                            VARCHAR(25)
+    nome_cor                            VARCHAR(25) NOT NULL
 );
+ 
 
 
 -- DEFININDO CONSTRAINTS FK --
@@ -109,6 +113,7 @@ ALTER TABLE modelos ADD CONSTRAINT FK_modelos_1
     ON DELETE RESTRICT;
 
 
+
 -- CHECKS --
 
 ALTER TABLE pessoas ADD CONSTRAINT CK_cpf CHECK (LENGTH(cpf) = 11)
@@ -117,7 +122,13 @@ ALTER TABLE pessoas ADD CONSTRAINT CK_celular CHECK (LENGTH(celular) = 11)
 ALTER TABLE pessoas ADD CONSTRAINT CK_data_cadastro CHECK (data_cadastro = CURRENT_DATE)
 
 ALTER TABLE veiculos ADD CONSTRAINT CK_placa CHECK (LENGTH(placa) = 7)
+ALTER TABLE veiculos ADD CONSTRAINT CK_valor_diaria CHECK (valor_diaria >= 0)
+ALTER TABLE veiculos ADD CONSTRAINT CK_ano_modelo CHECK (ano_modelo <= DATE_PART('YEAR', CURRENT_DATE)+ 1)
+ALTER TABLE veiculos ADD CONSTRAINT CK_ano_fabricacao CHECK (ano_fabricacao <= EXTRACT ('YEAR' FROM CURRENT_DATE))
 
-ALTER TABLE locacao ADD CONSTRAINT CK_kilometragem CHECK (km_final > km_inicial)
-ALTER TABLE locacao ADD CONSTRAINT CK_data_locacao CHECK (data_prevista_devolucao > data_locacao)
+ALTER TABLE locacao ADD CONSTRAINT CK_kilometragem CHECK (km_final >= km_inicial)
+ALTER TABLE locacao ADD CONSTRAINT CK_data_locacao CHECK (data_prevista_devolucao >= data_locacao)
 ALTER TABLE locacao ADD CONSTRAINT CK_data_locacao CHECK (data_efetiva_devolucao >= data_locacao)
+
+ALTER TABLE funcionarios ADD CONSTRAINT CK_salario CHECK (salario > 0)
+ALTER TABLE funcionarios ADD CONSTRAINT CK_data_contratacao CHECK (data_contratacao = CURRENT_DATE)
